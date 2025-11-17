@@ -1,0 +1,55 @@
+{%- doc -%}
+  This snippet renders product pricing with members-only functionality.
+  Integrates with Wholesale Pricing Now (WPN) app for actual discount calculations.
+
+  WHOLESALE PRICING NOW INTEGRATION:
+  - WPN handles actual discount calculations and checkout pricing
+  - member-price.liquid provides login gate for guests
+  - Logged-in members see standard prices (WPN overrides with discounts)
+  - Customer tags (staff, warehouse, friends-family, vip) must match WPN groups
+
+  @param {product} product_resource - The product to render
+  @param {boolean} [show_unit_price] - Whether to show the unit price
+  @param {boolean} [show_sale_price_first] - Whether to show the sale price first
+{%- enddoc -%}
+
+{%- liquid
+  assign show_unit_price = show_unit_price | default: false
+  assign show_sale_price_first = show_sale_price_first | default: false
+  assign selected_variant = product_resource.selected_or_first_available_variant
+  assign price = selected_variant.price
+  assign compare_at_price = selected_variant.compare_at_price
+
+  assign show_compare_price = false
+  if compare_at_price > price
+    assign show_compare_price = true
+  endif
+
+  if product_resource == blank
+    assign price = 1999
+  endif
+
+  # Checks if product handle matches the closest product's handle (i.e. product page)
+  # and if the currency code is enabled for product pages
+  if product.handle == closest.product.handle and settings.currency_code_enabled_product_pages
+    assign price = price | money_with_currency
+    assign compare_at_price = compare_at_price | money_with_currency
+
+    # Checks if product handle does not match the closest product's handle (i.e. product card)
+    # and if the currency code is enabled for product cards
+  elsif product.handle != closest.product.handle and settings.currency_code_enabled_product_cards
+    assign price = price | money_with_currency
+    assign compare_at_price = compare_at_price | money_with_currency
+
+  else
+    assign price = price | money
+    assign compare_at_price = compare_at_price | money
+  endif
+-%}
+
+{% comment %} Use member pricing for all price displays {% endcomment %}
+{% render 'member-price', 
+  product_resource: product_resource, 
+  show_unit_price: show_unit_price, 
+  show_sale_price_first: show_sale_price_first 
+%}

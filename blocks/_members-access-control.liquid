@@ -1,0 +1,92 @@
+{% comment %}
+  Members-Only Access Control Block for Vessel Theme
+  Integrates with Vessel's block system to provide seamless access control
+{% endcomment %}
+
+{% unless customer %}
+  {% comment %} Guest user - show access denied and redirect {% endcomment %}
+  <script>
+    window.location.href = '/account/login?return_to=' + encodeURIComponent(window.location.pathname + window.location.search);
+  </script>
+  
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=/account/login?return_to={{ request.path | url_encode }}">
+  </noscript>
+  
+  <div class="members-access-control">
+    <div class="access-denied">
+      <div class="access-denied__content">
+        <div class="access-denied__icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M12 1v6"></path>
+          </svg>
+        </div>
+        <h1 class="access-denied__title">{{ block.settings.title | default: 'Members-Only Access Required' }}</h1>
+        <p class="access-denied__message">
+          {{ block.settings.message | default: 'This is an exclusive members-only store. Please log in to view products and access special pricing.' }}
+        </p>
+        <div class="access-denied__details">
+          <h3>Member Benefits:</h3>
+          <ul>
+            <li>🏷️ Exclusive member pricing up to 40% off</li>
+            <li>🔐 Access to special collections</li>
+            <li>⚡ Priority customer support</li>
+            <li>🎁 Member-only products</li>
+          </ul>
+        </div>
+        <div class="access-denied__actions">
+          <a href="/account/login?return_to={{ request.path | url_encode }}" class="button button--primary">
+            {{ block.settings.login_text | default: 'Login to Continue' }}
+          </a>
+          <a href="/account/register" class="button button--secondary">
+            {{ block.settings.register_text | default: 'Create Account' }}
+          </a>
+        </div>
+        <p class="access-denied__note">
+          <small>You will be redirected to the login page automatically.</small>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} Stop rendering the rest of the page {% endcomment %}
+  <style>
+    .product-information > *:not(.members-access-control) {
+      display: none !important;
+    }
+  </style>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Members Access Control",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Access Denied Title",
+      "default": "Members-Only Access Required"
+    },
+    {
+      "type": "textarea",
+      "id": "message", 
+      "label": "Access Denied Message",
+      "default": "This is an exclusive members-only store. Please log in to view products and access special pricing."
+    },
+    {
+      "type": "text",
+      "id": "login_text",
+      "label": "Login Button Text",
+      "default": "Login to Continue"
+    },
+    {
+      "type": "text", 
+      "id": "register_text",
+      "label": "Register Button Text",
+      "default": "Create Account"
+    }
+  ]
+}
+{% endschema %}

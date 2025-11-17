@@ -1,0 +1,206 @@
+{%- comment -%}
+  Member Price Snippet - Displays tiered pricing based on customer tags
+  Works with Shopify automatic discounts for checkout
+  Shows preview pricing on product/collection pages
+  
+  @param {object} product_resource - The product to render pricing for
+  @param {boolean} [show_unit_price] - Whether to show the unit price
+  @param {boolean} [show_sale_price_first] - Whether to show the sale price first
+{%- endcomment -%}
+
+{%- liquid
+  assign show_unit_price = show_unit_price | default: false
+  assign show_sale_price_first = show_sale_price_first | default: false
+  assign selected_variant = product_resource.selected_or_first_available_variant
+  assign price = selected_variant.price
+  assign compare_at_price = selected_variant.compare_at_price
+
+  assign show_compare_price = false
+  if compare_at_price > price
+    assign show_compare_price = true
+  endif
+
+  if product_resource == blank
+    assign price = 1999
+  endif
+
+  # Check if customer is logged in and has specific tags
+  assign is_staff = false
+  assign is_friends_family = false
+  assign is_vip = false
+  assign is_warehouse = false
+  
+  if customer
+    for tag in customer.tags
+      case tag
+        when 'staff'
+          assign is_staff = true
+        when 'friends-family'
+          assign is_friends_family = true
+        when 'vip'
+          assign is_vip = true
+        when 'warehouse'
+          assign is_warehouse = true
+      endcase
+    endfor
+  endif
+
+  # Calculate member pricing for display (Shopify automatic discounts apply at checkout)
+  assign member_price = price
+  assign discount_percentage = 0
+  
+  if is_staff
+    assign discount_percentage = 40
+    assign discount_multiplier = 100 | minus: 40
+    assign member_price = price | times: discount_multiplier | divided_by: 100
+  elsif is_friends_family
+    assign discount_percentage = 20
+    assign discount_multiplier = 100 | minus: 20
+    assign member_price = price | times: discount_multiplier | divided_by: 100
+  elsif is_vip
+    assign discount_percentage = 15
+    assign discount_multiplier = 100 | minus: 15
+    assign member_price = price | times: discount_multiplier | divided_by: 100
+  elsif is_warehouse
+    assign discount_percentage = 25
+    assign discount_multiplier = 100 | minus: 25
+    assign member_price = price | times: discount_multiplier | divided_by: 100
+  endif
+
+  # Format prices for display
+  if product.handle == closest.product.handle and settings.currency_code_enabled_product_pages
+    assign price_formatted = price | money_with_currency
+    assign compare_at_price_formatted = compare_at_price | money_with_currency
+    assign member_price_formatted = member_price | money_with_currency
+  elsif product.handle != closest.product.handle and settings.currency_code_enabled_product_cards
+    assign price_formatted = price | money_with_currency
+    assign compare_at_price_formatted = compare_at_price | money_with_currency
+    assign member_price_formatted = member_price | money_with_currency
+  else
+    assign price_formatted = price | money
+    assign compare_at_price_formatted = compare_at_price | money
+    assign member_price_formatted = member_price | money
+  endif
+-%}
+
+<div ref="memberPriceContainer" class="member-price-container">
+  {% if customer %}
+    {% if discount_percentage > 0 %}
+      <!-- Member pricing with discount - show original price strikethrough then discounted price -->
+      <div class="member-pricing">
+        <span role="group">
+          <span class="visually-hidden">Regular price&nbsp;</span>
+          <span class="compare-at-price">{{- price_formatted -}}</span>
+        </span>
+
+        <span role="group">
+          <span class="visually-hidden">Sale price&nbsp;</span>
+          <span class="price">{{ member_price_formatted | default: '&nbsp;' }}</span>
+        </span>
+      </div>
+    {% else %}
+      <!-- Regular pricing for members without special tags -->
+      {% if show_sale_price_first == false and show_compare_price %}
+        <span role="group">
+          <span class="visually-hidden">Regular price&nbsp;</span>
+          <span class="compare-at-price">{{- compare_at_price_formatted -}}</span>
+        </span>
+      {% endif %}
+
+      <span role="group">
+        <span class="visually-hidden">Sale price&nbsp;</span>
+        <span class="price">{{ price_formatted | default: '&nbsp;' }}</span>
+      </span>
+
+      {% if show_sale_price_first == true and show_compare_price %}
+        <span role="group">
+          <span class="visually-hidden">Regular price&nbsp;</span>
+          <span class="compare-at-price">{{- compare_at_price_formatted -}}</span>
+        </span>
+      {% endif %}
+    {% endif %}
+  {% else %}
+    <!-- Non-logged in users -->
+    {% if settings.members_only_mode %}
+      <!-- Members-only mode: show login prompt -->
+      <div class="login-pricing">
+        <span class="login-required">Login to see pricing</span>
+        <a href="/account/login" class="login-link">Login</a>
+      </div>
+    {% else %}
+      <!-- Public mode: show retail price -->
+      <span role="group">
+        <span class="visually-hidden">Sale price&nbsp;</span>
+        <span class="price">{{ price_formatted | default: '&nbsp;' }}</span>
+      </span>
+    {% endif %}
+  {% endif %}
+
+  {%- if selected_variant.unit_price and show_unit_price and customer -%}
+    {%- liquid
+      if product.handle == closest.product.handle and settings.currency_code_enabled_product_pages
+        assign unit_price = selected_variant.unit_price | money_with_currency
+      elsif product.handle != closest.product.handle and settings.currency_code_enabled_product_cards
+        assign unit_price = selected_variant.unit_price | money_with_currency
+      else
+        assign unit_price = selected_variant.unit_price | money
+      endif
+    -%}
+    {% render 'unit-price', price: unit_price, measurement: selected_variant.unit_price_measurement %}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .member-price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .member-pricing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .login-pricing {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    text-align: center;
+    border: 2px solid #dee2e6;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .login-required {
+    font-weight: 700;
+    color: #495057;
+    font-size: 1.1rem;
+    letter-spacing: 0.3px;
+  }
+
+  .login-link {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 2px solid #1a1a1a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .login-link:hover {
+    background: linear-gradient(135deg, #2d2d2d 0%, #404040 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+{% endstylesheet %}

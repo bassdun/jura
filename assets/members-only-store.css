@@ -1,0 +1,347 @@
+/* Members-Only Store CSS for Vessel Theme */
+/* Integrates with Vessel's design system and CSS variables */
+
+/* ===== ACCESS DENIED PAGES ===== */
+.access-denied {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: var(--spacing-large, 2rem) var(--spacing-medium, 1rem);
+}
+
+.access-denied--collection {
+  min-height: 50vh;
+}
+
+.access-denied__content {
+  max-width: 600px;
+  width: 100%;
+}
+
+.access-denied__icon {
+  font-size: 4rem;
+  margin-bottom: var(--spacing-medium, 1rem);
+  color: var(--color-error, #dc3545);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.access-denied__icon svg {
+  width: 64px;
+  height: 64px;
+  stroke: var(--color-error, #dc3545);
+}
+
+.access-denied__title {
+  font-size: var(--font-size-h2, 2.5rem);
+  margin-bottom: var(--spacing-medium, 1rem);
+  color: var(--color-foreground, #1a1a1a);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.access-denied__message {
+  font-size: var(--font-size-large, 1.25rem);
+  margin-bottom: var(--spacing-large, 2rem);
+  color: var(--color-foreground-secondary, #495057);
+  line-height: 1.6;
+}
+
+.access-denied__details {
+  background: var(--color-background-secondary, #f8f9fa);
+  padding: var(--spacing-large, 2rem);
+  border-radius: var(--border-radius-medium, 12px);
+  margin-bottom: var(--spacing-large, 2rem);
+  text-align: left;
+  border: 1px solid var(--color-border, #dee2e6);
+}
+
+.access-denied__details h3 {
+  margin-bottom: var(--spacing-medium, 1rem);
+  color: var(--color-foreground, #1a1a1a);
+  font-size: var(--font-size-medium, 1.125rem);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.access-denied__details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.access-denied__details li {
+  margin-bottom: var(--spacing-small, 0.75rem);
+  font-size: var(--font-size-base, 1rem);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small, 0.5rem);
+}
+
+.access-denied__details p {
+  margin-bottom: var(--spacing-small, 0.75rem);
+  font-size: var(--font-size-base, 1rem);
+}
+
+.access-denied__details p:last-child {
+  margin-bottom: 0;
+}
+
+.access-tag {
+  background: var(--color-foreground, #1a1a1a);
+  color: var(--color-background, white);
+  padding: var(--spacing-xs, 0.5rem) var(--spacing-small, 1rem);
+  border-radius: var(--border-radius-small, 8px);
+  font-size: var(--font-size-small, 0.875rem);
+  font-weight: var(--font-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.access-denied__actions {
+  display: flex;
+  gap: var(--spacing-medium, 1.25rem);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-medium, 1rem);
+}
+
+.access-denied__note {
+  color: var(--color-foreground-tertiary, #6c757d);
+  font-style: italic;
+  font-size: var(--font-size-small, 0.875rem);
+}
+
+/* ===== MEMBER PRICING STYLES ===== */
+.price-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.price--member .price__original {
+  text-decoration: line-through;
+  opacity: 0.7;
+  font-size: 0.9em;
+  color: var(--color-foreground-secondary, #666);
+}
+
+.price__current--member {
+  color: var(--color-success, #28a745);
+  font-weight: var(--font-weight-bold, 600);
+  font-size: 1.1em;
+}
+
+.price__badge--member {
+  background: var(--color-success, #28a745);
+  color: var(--color-background, white);
+  padding: 0.2em 0.5em;
+  border-radius: var(--border-radius-small, 0.25em);
+  font-size: 0.75em;
+  font-weight: var(--font-weight-bold, 600);
+  text-transform: uppercase;
+  margin-left: 0.5em;
+  display: inline-block;
+}
+
+.price--login-required {
+  background: var(--color-error, #dc3545);
+  color: var(--color-background, white);
+  border-radius: var(--border-radius-medium, 0.5em);
+  overflow: hidden;
+}
+
+.price__login-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs, 0.5em);
+  padding: var(--spacing-medium, 1em);
+  color: inherit;
+  text-decoration: none;
+  font-weight: var(--font-weight-bold, 600);
+  transition: background-color 0.2s ease;
+}
+
+.price__login-prompt:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: inherit;
+  text-decoration: none;
+}
+
+.icon--lock {
+  flex-shrink: 0;
+}
+
+/* ===== BUTTON OVERRIDES FOR VESSEL COMPATIBILITY ===== */
+.button {
+  display: inline-block;
+  padding: var(--spacing-medium, 0.875rem) var(--spacing-large, 2rem);
+  border-radius: var(--border-radius-small, 8px);
+  text-decoration: none;
+  font-weight: var(--font-weight-bold, 700);
+  font-size: var(--font-size-base, 1rem);
+  transition: all 0.3s ease;
+  min-width: 140px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.button--primary {
+  background: var(--color-button-primary, var(--color-foreground, #1a1a1a));
+  color: var(--color-button-primary-text, var(--color-background, #ffffff));
+  border-color: var(--color-button-primary, var(--color-foreground, #1a1a1a));
+}
+
+.button--primary:hover {
+  background: var(--color-button-primary-hover, var(--color-foreground-secondary, #2d2d2d));
+  color: var(--color-button-primary-text, var(--color-background, #ffffff));
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--color-button-secondary, var(--color-foreground, #1a1a1a));
+  border-color: var(--color-button-secondary, var(--color-foreground, #1a1a1a));
+}
+
+.button--secondary:hover {
+  background: var(--color-button-secondary, var(--color-foreground, #1a1a1a));
+  color: var(--color-button-secondary-text, var(--color-background, #ffffff));
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+/* ===== HEADER INTEGRATION ===== */
+.header-actions .member-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small, 0.5rem);
+  color: var(--color-foreground, #1a1a1a);
+}
+
+.member-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.25rem);
+}
+
+.member-tag {
+  padding: var(--spacing-xs, 0.2rem) var(--spacing-small, 0.5rem);
+  border-radius: var(--border-radius-small, 0.25rem);
+  font-size: var(--font-size-small, 0.75rem);
+  font-weight: var(--font-weight-bold, 700);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.member-tag.staff { 
+  background: #8b4513; 
+  color: white; 
+}
+.member-tag.vip { 
+  background: #ffd700; 
+  color: #1a1a1a; 
+}
+.member-tag.warehouse { 
+  background: #2c3e50; 
+  color: white; 
+}
+.member-tag.friends-family { 
+  background: #27ae60; 
+  color: white; 
+}
+.member-tag.member { 
+  background: #6c757d; 
+  color: white; 
+}
+
+.member-name {
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-base, 1rem);
+}
+
+.guest-actions {
+  display: flex;
+  gap: var(--spacing-small, 0.5rem);
+}
+
+.guest-actions .login-button,
+.guest-actions .register-button {
+  padding: var(--spacing-small, 0.5rem) var(--spacing-medium, 1rem);
+  border-radius: var(--border-radius-small, 0.25rem);
+  text-decoration: none;
+  font-weight: var(--font-weight-bold, 600);
+  font-size: var(--font-size-small, 0.875rem);
+  transition: all 0.2s ease;
+}
+
+.login-button { 
+  background: var(--color-button-primary, #007cba); 
+  color: var(--color-background, white); 
+}
+
+.register-button { 
+  background: var(--color-success, #28a745); 
+  color: var(--color-background, white); 
+}
+
+.login-button:hover,
+.register-button:hover {
+  transform: translateY(-1px);
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media screen and (max-width: 749px) {
+  .access-denied {
+    padding: var(--spacing-medium, 1rem);
+    min-height: 50vh;
+  }
+  
+  .access-denied__title {
+    font-size: var(--font-size-h3, 2rem);
+  }
+  
+  .access-denied__details {
+    padding: var(--spacing-medium, 1.5rem);
+    text-align: center;
+  }
+  
+  .access-denied__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .button {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .guest-actions {
+    flex-direction: column;
+    gap: var(--spacing-xs, 0.25rem);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .access-denied__icon {
+    font-size: 3rem;
+  }
+  
+  .access-denied__title {
+    font-size: var(--font-size-h4, 1.75rem);
+  }
+  
+  .access-denied__message {
+    font-size: var(--font-size-base, 1rem);
+  }
+}

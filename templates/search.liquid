@@ -1,0 +1,42 @@
+{% comment %}
+  Members-Only Search Template for Vessel Theme
+  Restricts search access to logged-in customers only
+{% endcomment %}
+
+{% if customer or request.design_mode or shop.password_enabled %}
+  {% comment %} Member is logged in, in customiser, or store is password-protected - show search results {% endcomment %}
+  {% section 'search-header' %}
+  {% section 'search-results' %}
+  
+{% else %}
+  {% comment %} Guest user - redirect to login {% endcomment %}
+  <script>
+    window.location.href = '/account/login?return_to=' + encodeURIComponent(window.location.pathname + window.location.search);
+  </script>
+  
+  <noscript>
+    <meta http-equiv="refresh" content="0;url=/account/login?return_to={{ request.path | url_encode }}">
+  </noscript>
+  
+  <div class="section section--full-width">
+    <div class="page-width">
+      <div class="access-denied">
+        <div class="access-denied__content">
+          <div class="access-denied__icon">🔍</div>
+          <h1 class="access-denied__title">Search Restricted</h1>
+          <p class="access-denied__message">
+            Please log in to search products and access our exclusive catalog.
+          </p>
+          <div class="access-denied__actions">
+            <a href="/account/login?return_to={{ request.path | url_encode }}" class="button button--primary">
+              Login to Continue
+            </a>
+            <a href="/account/register" class="button button--secondary">
+              Create Account
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,41 @@
+{% comment %}
+  Members-Only Cart Template for Vessel Theme
+  Restricts cart access to logged-in customers only
+{% endcomment %}
+
+{% if customer or request.design_mode or shop.password_enabled %}
+  {% comment %} Member is logged in, in customiser, or store is password-protected - show cart {% endcomment %}
+  {% section 'main-cart' %}
+  
+{% else %}
+  {% comment %} Guest user - redirect to login {% endcomment %}
+  <script>
+    window.location.href = '{{ routes.account_login_url }}?return_to=' + encodeURIComponent(window.location.pathname + window.location.search);
+  </script>
+  
+  <noscript>
+    <meta http-equiv="refresh" content="0;url={{ routes.account_login_url }}?return_to={{ request.path | url_encode }}">
+  </noscript>
+  
+  <div class="section section--full-width">
+    <div class="page-width">
+      <div class="access-denied">
+        <div class="access-denied__content">
+          <div class="access-denied__icon">🛒</div>
+          <h1 class="access-denied__title">Login Required</h1>
+          <p class="access-denied__message">
+            Please log in to view your cart and complete your purchase.
+          </p>
+          <div class="access-denied__actions">
+            <a href="{{ routes.account_login_url }}?return_to={{ request.path | url_encode }}" class="button button--primary">
+              Login to Continue
+            </a>
+            <a href="{{ routes.account_register_url }}" class="button button--secondary">
+              Create Account
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
