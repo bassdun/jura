@@ -1,0 +1,15 @@
+# Shopify Theme Files
+.DS_Store
+*.log
+node_modules/
+.vscode/
+.idea/
+
+# Shopify CLI
+.shopify/
+config.yml
+
+# Environment files
+.env
+.env.local
+
