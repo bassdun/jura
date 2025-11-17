@@ -29,13 +29,12 @@
     assign price = 1999
   endif
 
-  # Check if customer is approved (case-insensitive check)
+  # Check if customer is approved (checks both "Approved" and "approved")
   assign is_approved = false
   
   if customer
     for tag in customer.tags
-      assign tag_lower = tag | downcase
-      if tag_lower == 'approved'
+      if tag == 'Approved' or tag == 'approved'
         assign is_approved = true
         break
       endif
@@ -43,18 +42,18 @@
   endif
 
   # Calculate member pricing based on product tags (only for approved customers)
+  # Checks for both capitalisations to be safe
   assign member_price = price
   assign discount_percentage = 0
   
   if is_approved and product_resource.tags
     for tag in product_resource.tags
-      assign tag_lower = tag | downcase
-      if tag_lower == 'cutler & friends'
+      if tag == 'Cutler & Friends' or tag == 'cutler & friends'
         assign discount_percentage = 29
         assign discount_multiplier = 100 | minus: 29
         assign member_price = price | times: discount_multiplier | divided_by: 100
         break
-      elsif tag_lower == 'expired & damaged'
+      elsif tag == 'Expired & Damaged' or tag == 'expired & damaged'
         assign discount_percentage = 60
         assign discount_multiplier = 100 | minus: 60
         assign member_price = price | times: discount_multiplier | divided_by: 100
