@@ -60,6 +60,24 @@
       endif
     endfor
   endif
+  
+  # DEBUG OUTPUT (remove after testing)
+  assign debug_tags = product_resource.tags | join: ', '
+-%}
+
+<!-- DEBUG INFO -->
+<div style="background: yellow; padding: 5px; font-size: 11px; border: 2px solid red;">
+  Customer: {{ customer.email | default: 'Not logged in' }}<br>
+  Approved: {{ is_approved }}<br>
+  Product: {{ product_resource.title }}<br>
+  Product Tags: {{ debug_tags }}<br>
+  Discount: {{ discount_percentage }}%<br>
+  Original Price: {{ price }}<br>
+  Member Price: {{ member_price }}
+</div>
+<!-- END DEBUG -->
+
+{%- liquid
 
   # Format prices for display
   if product.handle == closest.product.handle and settings.currency_code_enabled_product_pages
